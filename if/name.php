@@ -10,6 +10,9 @@
         if($name == 'Кевин'){
             echo 'Добро пожаловать, о блистательный правитель!';
         }
+        else{
+            echo 'Добро пожаловать на наш сайт, ' . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '!';
+        }
     ?>
 </body>
 </html>
