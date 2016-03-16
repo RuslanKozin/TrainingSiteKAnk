@@ -4,6 +4,7 @@ try{
       Поставив пробел и указав имя класса, вы сообщаете PHP какого типа объект нужен.
       PDO - встроенный класс в PHP.*/
     $pdo = new PDO('mysql:host=localhost;dbname=ijdb', 'ijdbuser', 'mypassword');
+        /*Настройка соединения*/
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); /*Вызываем метод setAttribute объекта PDO,
                         чтобы экземпляр PDO генерировал исключение PDOException каждый раз, когда он не в состоянии выполнить запрос*/
     $pdo->exec('SET NAMES "utf8"'); /*устанавливаем кодировку для подключения к MySQL*/
@@ -26,6 +27,6 @@ include 'output.html.php';
         PDO::ATTR_ERRMODE - атрибут управляющий выводом ошибок
         PDO::ERRMODE_EXCEPTION - режим выброса исключений
         Строка (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION) говорит, что мы хотим задать атрибуту, управляющему выводом ошибок
-        (PDO:  : ATTR_ERRMODE), режим выброса исключений  (PDO: :ERRMODE_EXCEPTION)
+        (PDO:: ATTR_ERRMODE), режим выброса исключений  (PDO::ERRMODE_EXCEPTION)
 */
 ?>
