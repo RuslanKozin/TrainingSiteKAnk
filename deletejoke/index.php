@@ -91,6 +91,23 @@ if (isset($_POST['joketext'])) { /*Проверяем наличие перем�
                 после добавления шутки в базу данных*/
     exit();
 }
+        /* Удаление шутки*/
+if(isset($_GET['deletejoke'])){
+    try{
+        $sql = 'DELETE FROM joke WHERE id = :id';
+        $s = $pdo->prepare($sql);
+        $s->bindValue(':id', $_POST['id']);
+        $s->execute();
+    }
+    catch (PDOException $e){
+        $error = 'Ошибка при удалении шутки: ' . $e->getMessage();
+        include 'error.html.php';
+        exit();
+    }
+    header('Location: .');
+    exit();
+}
+/*....................................................................*/
 
 try{
     $sql = 'SELECT id, joketext FROM joke';
