@@ -33,3 +33,10 @@ UPDATE joke SET jokedate = "2012-04-01" WHERE id="";
 
 ALTER TABLE joke ADD COLUMN authorname VARCHAR(255)
   #Добавили в таблицу joke столбец под названием authorname и типом VARCHAR 255 - строка переменной длины не более 255 символов
+
+#DISTINCT - предотвращает вывод дублирующихся строк
+  SELECT DISTINCT authorname, authotmail FROM joke
+
+#Удаляем столбец в таблице
+ALTER TABLE joke DROP COLUMN authorname
+  #Удаляем из таблицы joke столбец authorname
