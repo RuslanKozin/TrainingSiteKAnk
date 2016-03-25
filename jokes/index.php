@@ -113,7 +113,7 @@ if(isset($_GET['deletejoke'])){
 
 try{
     $sql = 'SELECT joke.id, joketext, name, email
-          FROM joke INNER JOIN
+          FROM joke INNER JOIN author
           ON authorid = author.id';
     $result = $pdo->query($sql); /*вытаскиваем данные из базы данных и сохраняем в переменную result*/
     /*Метод query похож на метод ехес тем, что в качестве аргумента принимает SQL-запрос, направленный
