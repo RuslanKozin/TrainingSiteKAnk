@@ -112,9 +112,10 @@ if(isset($_GET['deletejoke'])){
 /*....................................................................*/
 
 try{
-    $sql = 'SELECT joke.id, joketext, name, email
-          FROM joke INNER JOIN author
-          ON authorid = author.id';
+    $sql = 'SELECT joke.id, joketext, name, email /*Выбираем поля id таблицы joke, joketext, name, email*/
+          FROM joke INNER JOIN author /*внутренне объединённо из таблиц joke и author*/
+          ON authorid = author.id'; /*условия связанностей таблиц - это совпадение значений ячеек authorid и author.id*/
+    
     $result = $pdo->query($sql); /*вытаскиваем данные из базы данных и сохраняем в переменную result*/
     /*Метод query похож на метод ехес тем, что в качестве аргумента принимает SQL-запрос, направленный
       базе данных. Отличие заключается в том, что он возвращает объект PDOStatement, который представляет
