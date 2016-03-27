@@ -36,10 +36,12 @@ ALTER TABLE joke ADD COLUMN authorname VARCHAR(255)
 
 #DISTINCT - предотвращает вывод дублирующихся строк
   SELECT DISTINCT authorname, authotmail FROM joke
+/*....................................................................................................*/
 
 #Удаляем столбец в таблице
 ALTER TABLE joke DROP COLUMN authorname
   #Удаляем из таблицы joke столбец authorname
+/*.....................................................................................................*/
 
   #Создаем промежуточную таблицу
 CREATE TABLE jokecategory ( /*Создаем таблицу с именем jokecategory*/
@@ -47,3 +49,15 @@ CREATE TABLE jokecategory ( /*Создаем таблицу с именем joke
   categoryid INT NOT NULL,  /*создаем ячейку categoryid, INT - целые числа, NOT NULL - не должно быть пустым*/
   PRIMARY KEY (jokeid, categoryid)  /*Первичный ключ для ячеек jokeid и categoryid*/
 )DEFAULT CHARACTER SET utf8 ENGINE=InnoDB  /*Кодировка по умолчанию utf8 и движок для хранения инф. бызы данных*/
+/*....................................................................................................*/
+
+  #Вывод с нескольких таблиц (Выводим список всех шуток в категории "О д'Артаньяне")
+SELECT joketext     /*Выбираем ячейку joketext */
+FROM joke INNER JOIN jokecategory  /*из таблицы joke внутренне объединяем с таблицей jokecategory*/
+    ON joke.id = jokeid   /*условие объединение: равенство значений ячеек id таблицы joke и jokeid таблицы jokecategory*/
+INNER JOIN category   /*полученный результат внутренне объединяем с таблицей category*/
+    ON categoryid = category.id  /*условия объединения: равенство ячеек categoryid из таблицы jokecategory и
+                                  ячейки id из таблицы category*/
+WHERE name = "о д'Артаньяне"    /*Где в ячейки name есть "о д'Артаньяне"*/
+/*....................................................................................................*/
+
