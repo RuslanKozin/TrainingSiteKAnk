@@ -27,7 +27,7 @@ INSERT INTO joke
 
 #Обновление даты шутки в базе данных
 
-UPDATE joke SET jokedate = "2012-04-01" WHERE id="";
+UPDATE joke SET jokedate = "2012-04-01" WHERE id="1";
 
 #Добавить столбец в таблицу
 
@@ -40,3 +40,10 @@ ALTER TABLE joke ADD COLUMN authorname VARCHAR(255)
 #Удаляем столбец в таблице
 ALTER TABLE joke DROP COLUMN authorname
   #Удаляем из таблицы joke столбец authorname
+
+  #Создаем промежуточную таблицу
+CREATE TABLE jokecategory ( /*Создаем таблицу с именем jokecategory*/
+  jokeid INT NOT NULL,    /*создаем ячейку jokeid, INT(integer) - целые числа, NOT NULL - не должно быть пустым*/
+  categoryid INT NOT NULL,  /*создаем ячейку categoryid, INT - целые числа, NOT NULL - не должно быть пустым*/
+  PRIMARY KEY (jokeid, categoryid)  /*Первичный ключ для ячеек jokeid и categoryid*/
+)DEFAULT CHARACTER SET utf8 ENGINE=InnoDB  /*Кодировка по умолчанию utf8 и движок для хранения инф. бызы данных*/
