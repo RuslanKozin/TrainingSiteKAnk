@@ -75,3 +75,14 @@ WHERE joketext LIKE "Сколько адвокатов"   /*ГДЕ в ячейк
 /*....................................................................................................*/
 
   /*Выводим имена всех авторов, которые добавили шутки о д'Артаньяне*/
+SELECT author.name    /*Выбираем ячейку name из таблицы author*/
+FROM joke INNER JOIN author   /*внутренне объединяем таблицы joke и author*/
+    ON authorid = author.id   /*условие объединения: равенство значений ячеек authorid из таблицы joke и
+                              ячейки id из таблицы author*/
+INNER JOIN jokecategory   /*полученный результат внутренне объединяем с таблицей jokecategory*/
+    ON joke.id = jokeid   /*условие объединения: равенство значений ячеек joke таблицы joke и jokeid из таблицы jokecategory*/
+INNER JOIN category     /*полученные рузельтат внутренне объединяем с таблицей category*/
+    ON categoryid = category.id   /*условия объединения: равенство значений ячеек categoryid таблицы jokecategory
+                                  и ячейки id таблицы category*/
+WHERE category.name = "о д'Артаньяне"   /*ГДЕ в ячейке name таблицы category есть слова "о д'Артаньяне"
+                                        иными словами ГДЕ категория о д'Артаньяне*/
