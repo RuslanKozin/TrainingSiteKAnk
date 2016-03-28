@@ -1,20 +1,7 @@
 <?php
     /*Волшебные кавычки - метод защиты от внедрения SQL-кода*/
-if (get_magic_quotes_gpc()) {
-    $process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-    while (list($key, $val) = each($process)) {
-        foreach ($val as $k => $v) {
-            unset($process[$key][$k]);
-            if (is_array($v)) {
-                $process[$key][stripslashes($k)] = $v;
-                $process[] = &$process[$key][stripslashes($k)];
-            } else {
-                $process[$key][stripslashes($k)] = stripslashes($v);
-            }
-        }
-    }
-    unset($process);
-}
+include $_SERVER['DOCUMENT_ROOT'] . '/includes/magicquotes.inc.php';
+
     /* Проверяем нажата ли кнопка "Добавить шутку"  */
 if (isset($_GET['addjoke'])) { /* если существует элемент/переменная addjoke в глоб. массиве GET */
     include 'form.html.php'; /* если да, то выводим форму добавления шутки */
