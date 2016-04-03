@@ -17,6 +17,8 @@
                         <input type="hidden" name="id" value="<?php echo $author['id'];?>">
                         <input type="submit" name="action" value="Редактировать">
                         <input type="submit" name="action" value="Удалить">
+                            <!--Обе кнопки имеют одинаковое значение атрибута name(action),чтобы исходя из
+                            отправленных данных ($_POST['action']) контроллер мог определить, какая из них была нажата.-->
                     </div>
                 </form>
             </li>
