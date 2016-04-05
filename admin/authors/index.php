@@ -1,4 +1,41 @@
-<?php
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/magicquotes.inc.php';
+
+/* ..................... Добавление автора ....................... */
+if (isset($_GET['add'])) {
+    $pageTitle = 'Новый автор';
+    $action = 'addform';
+    $name = '';
+    $email = '';
+    $id = '';
+    $button = 'Добавить автора';
+
+    include 'form.html.php';
+    exit();
+}
+if (isset($_GET['addform'])) {
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+
+    try {
+        $sql = 'INSERT INTO author SET 
+                name = :name,
+                email = :email';
+        $s = $pdo->prepare($sql);
+        $s->bindValue(':name', $_POST['name']);
+        $s->bindValue(':email', $_POST['email']);
+        $s->execute();
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при добавлении автора.';
+        include 'error.html.php';
+        exit();
+    }
+    header('Location: .');  /*отсылаем заголовок Location, чтобы объявить о перенаправлении.
+                Точка . обозначает текущий документ/директорию т.е. нужно перезагрузить текущую директорию
+                после добавления шутки в базу данных*/
+    exit();
+}
+/*.................................................................*/
+
 /* ..................... Удаление автора ......................... */
 if(isset($_POST['action']) and $_POST['action'] == 'Удалить') {  /*Если существует переменная $_POST['action'] -
         глобальный массив $_POST со значением action, and и значение переменной $_POST равно Удалить
