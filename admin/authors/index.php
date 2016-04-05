@@ -43,7 +43,7 @@ if(isset($_POST['action']) and $_POST['action'] == 'Удалить') {  /*Есл
         //Для каждой шутки.
         foreach ($result as $row) {
             $jokeId = $row['id'];
-            $s->bindValue(':id', $jokeid);
+            $s->bindValue(':id', $jokeId);
             $s->execute();
         }
     }
