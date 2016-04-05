@@ -36,6 +36,58 @@ if (isset($_GET['addform'])) {
 }
 /*.................................................................*/
 
+/* ........................ Редактирование авторов ........................... */
+if (isset($_POST['action']) and $_POST['action'] == 'Редактировать') {
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+    try {
+        $sql = 'SELECT id, name, email FROM author WHERE id = :id';
+        $s = $pdo->prepare($sql);  /*Метод prepare направлляет MySQL серверу псевдопеременную находящуюся в $sql
+                    для подготовки выполнения команд, после возвращает объект PDOStatement и сохраняет в $s*/
+        $s->bindValue(':id', $_POST['id']);  /*С помощью метода bindValue заменяем псевдопеременную :id на $_POST['id']*/
+        $s->execute();  /*Метод execute говорит серверу MySQL выполнить запрос с предоставленными ему значениями*/
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при извлечении информации об авторе.' . $e->getMessage();
+        include 'error.html.php';
+        exit();
+    }
+    $row = $s->fetch();
+
+    $pageTitle = 'Редактировать автора';
+    $action = 'editform';
+    $name = $row['name'];
+    $email = $row['email'];
+    $id = $row['id'];
+    $button = 'Обновить информацию об авторе';
+    include 'form.html.php';
+    exit();
+}
+if (isset($_GET['editform'])) {
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+    try {
+        $sql = 'UPDATE author SET 
+                name = :name,
+                email = :email,
+                WHERE id = :id';
+        $s = $pdo->prepare($sql);  /*Метод prepare направлляет MySQL серверу псевдопеременные находящиеся в $sql
+                    для подготовки выполнения команд, после возвращает объект PDOStatement и сохраняет в $s*/
+        $s->bindValue(':id', $_POST['id']);  /*С помощью метода bindValue заменяем псевдопеременную :id на $_POST['id']*/
+        $s->bindValue(':name', $_POST['name']);
+        $s->bindValue(':email', $_POST['email']);
+        $s->execute();  /*Метод execute говорит серверу MySQL выполнить запрос с предоставленными ему значениями*/
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при обновлении записи об авторе.' . $e->getMessage();
+        include 'error.html.php';
+        exit();
+    }
+    header('Location: .');  /*отсылаем заголовок Location, чтобы объявить о перенаправлении.
+                Точка . обозначает текущий документ/директорию т.е. нужно перезагрузить текущую директорию
+                после добавления шутки в базу данных*/
+    exit();
+}
+/*.............................................................................*/
+
 /* ..................... Удаление автора ......................... */
 if(isset($_POST['action']) and $_POST['action'] == 'Удалить') {  /*Если существует переменная $_POST['action'] -
         глобальный массив $_POST со значением action, and и значение переменной $_POST равно Удалить
