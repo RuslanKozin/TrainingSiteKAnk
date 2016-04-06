@@ -109,3 +109,20 @@ if (isset($_POST['action']) and $_POST['action'] == 'Удалить') {
     exit();
 }
 /* ............................................................................. */
+
+/* ....................... Выводим список категорий ...................... */
+include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+
+try {
+    $result = $pdo->query('SELECT id, name FROM category');
+}
+catch (PDOException $e) {
+    $error = 'Ошибка при извлечении категорий из базы данных!' . $e->getMessage();
+    include 'error.html.php';
+    exit();
+}
+
+foreach ($result as $row) {
+    $categories[] = array('id' => $row['id'], 'name' => $row['name']);
+}
+include 'categories.html.php';
