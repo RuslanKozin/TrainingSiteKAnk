@@ -7,7 +7,7 @@ if (isset($_GET['action']) and $_GET['action'] == 'search') {
     //Базовое выражение SELECT.
     $select = 'SELECT id, joketext';
     $from = ' FROM joke';
-    $where = ' WHERE TRUE';
+    $where = ' WHERE TRUE';  /*WHERE TRUE - где истина*/
 }
 
 $placeholders = array();
@@ -21,13 +21,20 @@ if ($_GET['category'] != '') {  //Категория выбрана.
     $placeholders[':categoryid'] = $_GET['category'];
 }
 if ($_GET['text'] != '') {  //Была указана какая-то искомая строка.
-    $where .= " AND joketext LIKE :joketext";
+    $where .= " AND joketext LIKE :joketext";    /*Ключ. слово LIKE сообщает MySQL, что указанный столбец должен
+                удовлетворять заданному шаблону. В нашем случае это ('%' . $_GET['text'] . '%')*/
     $placeholders[':joketext'] = '%' . $_GET['text'] . '%';
 }
-try {
-    $sql = $select . $from . $where;
-    $s = $pdo->prepare($sql);
-    $s->execute($placeholders);
+try {  /*Формируем все составляющие SQL-запроса*/
+    $sql = $select . $from . $where;  /*В переменной $sql получется следующий SQL-запрос:
+    $sql = 'SELECT id, joketext  ($select)
+            FROM joke INNER JOIN jokecategory ON id = jokeid   ($from)
+            WHERE TRUE AND authorid = :authorid AND categoryid = :categoryid AND joketext LIKE :joketext'   ($where)*/
+    $s = $pdo->prepare($sql);   /*Метод prepare направлляет MySQL серверу псевдопеременную находящуюся в $sql
+                    для подготовки выполнения команд, после возвращает объект PDOStatement и сохраняет в $s*/
+    $s->execute($placeholders);  /*Поскольку массив $placeholders хранит значения всех псевдопеременных, можно
+                        передать их в метод execute сразу, а не указывать с помощью bindValue каждое в отдельности.*/
+                    /*Метод execute говорит серверу MySQL выполнить запрос с предоставленными ему значениями*/
 }
 catch (PDOException $e) {
     $error = 'Ошибка при извлечении шуток.';
