@@ -1,4 +1,51 @@
-<?php
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/magicquotes.inc.php';
+
+/* ............................ Добавление новой шутки ........................... */
+if (isset($_GET['add'])) {
+    $pageTitle = 'Новая шутка';
+    $action = 'addform';
+    $text = '';
+    $authorid = '';
+    $id = '';
+    $button = 'Добавить шутку';
+
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+
+    //Формируем список авторов.
+    try {
+        $result = $pdo->query('SELECT id, name FROM author');
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при извлечении списка авторов.';
+        include 'error.html.php';
+        exit();
+    }
+    foreach ($result as $row) {
+        $authors[] = array('id'=>$row['id'], 'name'=>$row['name']);
+    }
+
+    //Формируем список категорий.
+    try {
+        $result = $pdo->query('SELECT id, name FROM category');
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при извлечении списка категорий.';
+        include 'error.html.php';
+        exit();
+    }
+
+    foreach ($result as $row) {
+        $categories[] = array(
+            'id' => $row['id'],
+            'name' => $row['name'],
+            'selected' => FALSE     /*FALSE тут означает, что при добавлении шутки не будет выбрана ни одна шутка*/
+        );
+    }
+    include 'form.html.php';
+    exit();
+}
+/*.......................................................................................*/
+
 /*................................... Поиск шуток .......................................*/
 /* Запрос при котором не выбран не один критерий */
 if (isset($_GET['action']) and $_GET['action'] == 'search') {
