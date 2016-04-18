@@ -182,7 +182,71 @@ if(isset($_POST['action']) and $_POST['action'] == 'Редактировать')
     exit();
 }
 
-/*.......................................................................................*/
+if (isset($_GET['editform'])) {
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+
+    if ($_POST['author'] == '') {
+        $error = 'Вы должны выбрать автора для этой шутки. Вернитесь назад и попробуйте еще раз.';
+        include 'error.html.php';
+        exit();
+    }
+
+    try {
+        $sql = 'UPDATE joke SET 
+            joketext =  :joketext, 
+            authorid =  :authorid 
+            WHERE id =  :id';
+        $s = $pdo->prepare($sql);    /*Метод prepare направлляет MySQL серверу псевдопеременную находящуюся в $sql
+                    для подготовки выполнения команд, после возвращает объект PDOStatement и сохраняет в $s*/
+        $s->bindValue(':id', $_POST['id']);   /*С помощью метода bindValue заменяем псевдопеременную :id на $_POST['id']*/
+        $s->bindValue(':joketext', $_POST['text']);
+        $s->bindValue(':authorid', $_POST['author']);
+        $s->execute();      /*Метод execute говорит серверу MySQL выполнить запрос с предоставленными ему значениями*/
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при обновлении шутки.';
+        include 'error.html.php';
+        exit();
+    }
+    try {
+        $sql = 'DELETE FROM jokecategory WHERE jokeid = :id';
+        $s = $pdo->prepare($sql);    /*Метод prepare направлляет MySQL серверу псевдопеременную находящуюся в $sql
+                    для подготовки выполнения команд, после возвращает объект PDOStatement и сохраняет в $s*/
+        $s->bindValue(':id', $_POST['id']);  /*С помощью метода bindValue заменяем псевдопеременную :id на $_POST['id']*/
+        $s->execute();    /*Метод execute говорит серверу MySQL выполнить запрос с предоставленными ему значениями*/
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при удалении лишних записей относительно категорий шутки.';
+        include 'error.html.php';
+        exit();
+    }
+
+    if (isset($_POST['categories'])) {
+        try {
+            $sql = 'INSERT INTO jokecategory SET 
+                jokeid =  :jokeid, 
+                categoryid =  :categoryid';
+            $s = $pdo->prepare($sql);    /*Метод prepare направлляет MySQL серверу псевдопеременную находящуюся в $sql
+                    для подготовки выполнения команд, после возвращает объект PDOStatement и сохраняет в $s*/
+
+            foreach ($_POST['categories'] as $categoryid) {
+                $s->bindValue(':jokeid', $_POST['id']);    /*С помощью метода bindValue заменяем псевдопеременную :jokeid на $_POST['id']*/
+                $s->bindValue(':categoryid', $categoryid);
+                $s->execute();   /*Метод execute говорит серверу MySQL выполнить запрос с предоставленными ему значениями*/
+            }
+        }
+        catch  (PDOException $e) {
+            $error =  'Ошибка при добавлении шутки в выбранные категории.';
+            include  'error.html.php';
+            exit();
+        }
+    }
+    header('Location: .');   /*отсылаем заголовок Location, чтобы объявить о перенаправлении.
+                Точка . обозначает текущий документ/директорию т.е. нужно перезагрузить текущую директорию
+                после добавления шутки в базу данных*/
+    exit();
+}
+    /*.......................................................................................*/
 
 /*................................... Поиск шуток .......................................*/
 /* Запрос при котором не выбран не один критерий */
