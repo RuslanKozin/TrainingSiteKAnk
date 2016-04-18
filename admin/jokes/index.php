@@ -46,6 +46,92 @@ if (isset($_GET['add'])) {
 }
 /*.......................................................................................*/
 
+/* ............................... Редактирование шутки ................................ */
+if(isset($_POST['action']) and $_POST['action'] == 'Редактировать') {
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+
+    try {
+        $sql = 'SELECT id, joketext, authorid FROM joke WHERE id = :id';
+        $s = $pdo->prepare($sql);
+        $s->bindValue(':id', $_POST['id']);
+        $s->execute();
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при извлечении информации о шутке.';
+        include 'error.html.php';
+        exit();
+    }
+    $row = $s->fetch();
+
+    $pageTitle = 'Редактировать шутку';
+    $action = 'editform';
+    $text = $row['joketext'];
+    $authorid = $row['authorid'];
+    $id = $row['id'];
+    $button = 'Обновить шутку';
+
+    //Формируем список авторов.
+    try {
+        $result = $pdo->query('SELECT id, name FROM author');
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при извлечении списка авторов.';
+        include 'error.html.php';
+        exit();
+    }
+    foreach ($result as $row) {
+        $authors[] = array(':id' => $row['id'], 'name' => $row['name']);
+    }
+
+    //Получаем список категорий, к которым принадлежит шутка.
+    try {
+        $sql = 'SELECT categoryid FROM jokecategory WHERE jokeid = :id';  /*Данный запрос берет записи из промежуточной
+                таблицы jokecategory. Получает идентификаторы всех категорий, связанных с шуткой, которую пользователь
+                хочет отредактировать*/
+        $s = $pdo->prepare($sql);
+        $s->bindValue(':id', $id);
+        $s->execute();
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при извлечениии списка выбраных категорий.';
+        include 'error.html.php';
+        exit();
+    }
+
+    foreach ($s as $row) {
+        $selectedCategories[] = $row['categoryid'];  /*Идентификаторы всех выбранных категорий сохраняются в массив
+                                                      $selectedCategories*/
+    }
+
+    //Формируем список всех категорий.
+    try {
+        $result = $pdo->query('SELECT id, name FROM category');
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при извлечении списка категорий.';
+        include 'error.html.php';
+        exit();
+    }
+
+    foreach ($result as $row) {
+        $categories[] = array(
+            'id' => $row['id'],
+            'name' => $row['name'],
+            'selected' => in_array($row['id'], $selectedCategories)  /*Пока формируется список всех категорий,
+                          используемых в форме в виде флажков, происходит проверка их идентификаторв, позволяющая
+                          определить, упоминаются ли данные категории в массиве $selectedCategories.
+                          Это делается автоматически с помощью встроенной функции in_array.
+                    Возвращаемое значение(TRUE или FALSE) сохраняется в элемент массива 'selected', который
+                    присутствует в каждой категории. В дальнейшим оно используется в шаблоне формы для выбора
+                    соответствующих флажков.*/
+        );
+    }
+    include 'form.html.php';
+    exit();
+}
+
+/*.......................................................................................*/
+
 /*................................... Поиск шуток .......................................*/
 /* Запрос при котором не выбран не один критерий */
 if (isset($_GET['action']) and $_GET['action'] == 'search') {
