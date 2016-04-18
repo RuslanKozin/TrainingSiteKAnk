@@ -44,6 +44,58 @@ if (isset($_GET['add'])) {
     include 'form.html.php';
     exit();
 }
+
+if (isset($_GET['addform'])) {
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+
+    if ($_POST['author'] == '') {
+        $error = 'Вы должны выбрать автора для этой шутки. Вернитесь назад и попробуйте еще раз.';
+        include 'error.html.php';
+        exit();
+    }
+
+    try {
+        $sql = 'INSERT INTO joke SET
+              joketext = :joketext,
+              jokedate = CURDATE(),
+              authorid = :authorid';
+        $s = $pdo->prepare($sql);
+        $s->bindValue(':joketext', $_POST['text']);
+        $s->bindValue(':authorid', $_POST['author']);
+        $s->execute();
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при добавлении шутки.';
+        include 'error.html.php';
+        exit();
+    }
+    $jokeid = $pdo->lastInsertId();  /*Метод lastInsertId - возвращает число, которое сервер MySQL назначил
+                                последней добавленной записи с помощью автоинкремента(AUTO_INCREMENT).
+                            Иными словами, данный метод получает идентификатор только что добавленной шутки,
+                                который вскоре пригодится.*/
+
+    if (isset($_POST['categories'])) {
+        try {
+            $sql = 'INSERT INTO jokecategory SET 
+                jokeid = :jokeid,
+                categoryid = :categoryid';
+            $s = $pdo->prepare($sql);
+
+            foreach ($_POST['categories'] as $categoryid) {
+                $s->bindValue(':jokeid', $jokeid);
+                $s->bindValue(':categoryid', $categoryid);
+                $s->execute();
+            }
+        }
+        catch (PDOException $e) {
+            $error = 'Ошибка при добавлении шутки в выбранные категории.';
+            include 'error.html.php';
+            exit();
+        }
+    }
+    header('Location: .');
+    exit();
+}
 /*.......................................................................................*/
 
 /* ............................... Редактирование шутки ................................ */
