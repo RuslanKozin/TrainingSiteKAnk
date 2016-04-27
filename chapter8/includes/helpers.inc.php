@@ -32,6 +32,11 @@ function markdowm2html($text) {
         '<a href="$2">$l</a>', $text);
     /*...................................................................*/
     return $text;
+
+    // Функция markdownout вызывает  markdown2html и выводит результат
+    function markdownout($text){
+        echo markdowm2html($text);
+    }
 }
     /*
             КУРСИВ
