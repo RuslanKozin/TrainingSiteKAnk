@@ -1,4 +1,4 @@
-<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/helpers.inc.php';?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/chapter8/includes/helpers.inc.php';?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,7 +12,7 @@
             <tr><th>Текст шутки</th><th>Действия</th></tr>
             <?php foreach ($jokes as $joke): ?>
             <tr>
-                <td><?php htmlout($joke['text']);?></td>
+                <td><?php markdownout($joke['text']);?></td>
                 <td>
                     <form action="?" method="post">
                         <div>
