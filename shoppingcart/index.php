@@ -40,3 +40,9 @@ if (isset($_GET['cart'])) {         //Когда пользователь наж
     exit();
 }
 
+if (isset($_POST['action']) and $_POST['action'] == 'Очистить корзину') {
+    //Опустошаем массив $_SESSION['cart']
+    unset($_SESSION['cart']);
+    header('Location: ?cart');
+    exit();
+}
