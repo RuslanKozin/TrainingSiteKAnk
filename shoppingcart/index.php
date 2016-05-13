@@ -11,14 +11,19 @@ if (!isset($_SESSI0N['cart'])) {
                                     который представляет собой незаполненную корзину.*/
 }
 
-include 'catalog.html.php';
-
 if (isset($_POST['action']) and $_POST['action'] == 'Купить') {
 // Добавляем элемент в конец массива $_SESSION['cart'].
     $_SESSION['cart'][] = $_POST['id'];   /*Идентификатор товара добавляется в массив $_SESSION ['cart'] и отсылается
             браузеру на ту же страницу, но уже без данных, отправленных через форму. Таким образом, обновление
             страницы пользователем не приведет к повторному добавлению товара в корзину.*/
     header('Location: .');
+    exit();
+}
+
+if (isset($_POST['action']) and $_POST['action'] == 'Очистить корзину') {
+    //Опустошаем массив $_SESSION['cart']
+    unset($_SESSION['cart']);
+    header('Location: ?cart');
     exit();
 }
 
@@ -36,13 +41,9 @@ if (isset($_GET['cart'])) {         //Когда пользователь наж
             }
         }
     }
-    include  'cart.html.php';
+    include 'cart.html.php';
     exit();
 }
 
-if (isset($_POST['action']) and $_POST['action'] == 'Очистить корзину') {
-    //Опустошаем массив $_SESSION['cart']
-    unset($_SESSION['cart']);
-    header('Location: ?cart');
-    exit();
-}
+
+include 'catalog.html.php';
