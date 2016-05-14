@@ -1,5 +1,20 @@
 <?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/magicquotes.inc.php';
 
+/* ...................... Проверка роли пользователя ................... */
+require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/access.inc.php';
+if (!userIsLoggedIn()) {
+    include '../login.html.php';
+    exit();
+}
+
+if (!userHasRole('Редактор')) {
+    $error = 'Доступ к этой странице имеет только редактор.';
+    include '../accessdenied.html.php';
+    exit();
+}
+
+/* ..................................................................... */
+
 /* ............................ Добавление новой шутки ........................... */
 if (isset($_GET['add'])) {
     $pageTitle = 'Новая шутка';
