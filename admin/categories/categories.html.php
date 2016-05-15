@@ -23,5 +23,6 @@
         <?php endforeach;?>
     </ul>
     <p><a href="..">Вернуться на главную страницу</a></p>
+    <?php include '../logout.inc.html.php'; ?>  /*Подключаем файл выхода из системы*/
 </body>
 </html>
