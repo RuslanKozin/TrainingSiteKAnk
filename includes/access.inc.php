@@ -13,14 +13,14 @@ function userIsLoggedIn() {
 
         if (databaseContainsAuthor($_POST['email'], $password)) {  /*если пользователь заполнил форму*/
             session_start();
-            $_SESSION['loggedln'] = TRUE;
+            $_SESSION['loggedIn'] = TRUE;
             $_SESSION['email'] = $_POST['email'];
             $_SESSION['password'] = $password;
             return TRUE;
         }
         else {
             session_start();
-            unset($_SESSION['loggedln']);
+            unset($_SESSION['loggedIn']);
             unset($_SESSION['email']);
             unset($_SESSION['password']);
             $GLOBALS['loginError'] = 'Указан неверный адрес электронной почты или пароль.';
@@ -30,7 +30,7 @@ function userIsLoggedIn() {
 
     if (isset($_POST['action']) and $_POST['action'] == 'logout') {
         session_start();
-        unset($_SESSION['loggedln']);
+        unset($_SESSION['loggedIn']);
         unset($_SESSION['email']);
         unset($_SESSION['password']);
         header('Location: ' . $_POST['goto']);
@@ -38,13 +38,13 @@ function userIsLoggedIn() {
     }
         /*Проверка: находится ли пользователь в системе*/
     session_start();
-    if (isset($_SESSION['loggedln'])) {
+    if (isset($_SESSION['loggedIn'])) {
         return databaseContainsAuthor($_SESSION['email'], $_SESSION['password']);
     }
 }
 
 function databaseContainsAuthor($email, $password) {
-    include 'db.inc.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
 
     try {
         $sql = 'SELECT COUNT(*) FROM author WHERE email = :email AND password = :password';
@@ -54,7 +54,7 @@ function databaseContainsAuthor($email, $password) {
         $s->execute();
     }
     catch (PDOException $e) {
-        $error = 'Ошибка при поиске автора.';
+        $error = 'Ошибка при поиске автора.' . $e->getMessage();
         include 'error.html.php';
         exit();
     }
@@ -70,7 +70,7 @@ function databaseContainsAuthor($email, $password) {
 }
 
 function userHasRole($role) {
-    include 'db.inc.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
 
     try {
         $sql = "SELECT COUNT(*) FROM author
@@ -83,7 +83,7 @@ function userHasRole($role) {
         $s->execute();
     }
     catch (PDOException $e) {
-        $error = 'Ошибка при поиске ролей, назначенных автору.';
+        $error = 'Ошибка при поиске ролей, назначенных автору.' . $e->getMessage();
         include 'error.html.php';
         exit();
     }

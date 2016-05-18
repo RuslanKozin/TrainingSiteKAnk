@@ -44,8 +44,8 @@
             <?php foreach ($categories as $category): ?>
                 <div>
                     <label for="category<?php htmlout($category['id']); ?>">
-                        <input type="checkbox" name="categories[]"   /*Массив categories[] нужен для отправки
-                                                                        лемента формы как части массива*/
+                                <!--Массив categories[] нужен для отправки элемента формы как части массива-->
+                        <input type="checkbox" name="categories[]"
                             id="category<?php htmlout($category['id']); ?>"
                             value="<?php htmlout($category['id']); ?>"<?php  /*Задаем id соответствующей категории*/
                                 if ($category['selected']) {  //Если шутка из соответствующей категории, то
