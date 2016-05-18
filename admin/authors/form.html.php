@@ -22,15 +22,11 @@
             <legend>Roles:</legend>
             <?php for ($i = 0; $i < count($roles); $i++): ?>  <!--Генерируем уникальное число для каждой роли-->
                 <div>
-                    <label for="role<?php echo $i; ?>">
-                        <input type="checkbox" name="roles[]" id="role<?php echo $i; ?>"  <!--Формируем id для ролей-->
-                               value="<?php htmlout($roles[$i]['id']); ?>"
-                        <?php
-                            if ($roles[$i]['selected']) {
-                                echo 'checked';
-                            }
-                        ?>
-                        <?php htmlout($roles[$i]['id']); ?>>
+                    <label for="role<?php echo $i; ?>">         <!--Формируем id для ролей-->
+                        <input type="checkbox" name="roles[]" id="role<?php echo $i; ?>" value="<?php htmlout($roles[$i]['id']); ?>"
+                            <?php if ($roles[$i]['selected']){echo 'checked';} ?>
+                        >
+                        <?php htmlout($roles[$i]['id']); ?>
                     </label>
                     <?php htmlout($roles[$i]['description']); ?>
                 </div>
