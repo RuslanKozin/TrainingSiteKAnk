@@ -12,7 +12,7 @@
             <tr><th>Текст шутки</th><th>Действия</th></tr>
             <?php foreach ($jokes as $joke): ?>
             <tr>
-                <td><?php markdownout($joke['text']);?></td>
+                <td><?php htmlout($joke['text']);?></td>
                 <td>
                     <form action="?" method="post">
                         <div>
