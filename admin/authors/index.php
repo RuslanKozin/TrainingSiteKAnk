@@ -17,6 +17,9 @@ if (!userHasRole('Администратор учетных записей')) {
 
 /* ..................... Добавление автора ....................... */
 if (isset($_GET['add'])) {
+
+    include $_SERVER['DOCUMENT_ROOT'] . '/includes/db.inc.php';
+
     $pageTitle = 'Новый автор';
     $action = 'addform';
     $name = '';
@@ -24,6 +27,23 @@ if (isset($_GET['add'])) {
     $id = '';
     $button = 'Добавить автора';
 
+    /* ................... Формируем список ролей ................. */
+    try {
+        $result = $pdo->query('SELECT id, description FROM role');
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при получении списка ролей.';
+        include 'error.html.php';
+        exit();
+    }
+
+    foreach($result as $row) {
+        $roles[] = array(
+            'id' => $row['id'],
+            'description' => $row['description'],
+            'selected' => FALSE);
+    }
+    /*...............................................................*/
     include 'form.html.php';
     exit();
 }
@@ -44,6 +64,48 @@ if (isset($_GET['addform'])) {
         include 'error.html.php';
         exit();
     }
+    /* .................... Пароли и Роли ........................ */
+    $authorid = $pdo->lastInsertId();
+
+    if ($_POST['password'] != '') {
+        $password = md5($_POST['password'] . 'ijdb');
+
+        try {
+            $sql = 'UPDATE author SET
+                password = :password
+                WHERE id = :id';
+            $s =  $pdo->prepare($sql);
+            $s->bindValue(':password',  $password);
+            $s->bindValue(':id',  $authorid);
+            $s->execute();
+        }
+        catch  (PDOException $e)
+        {
+            $error =  'Ошибка при назначении пароля для автора.';
+            include  'error.html.php';
+            exit();
+        }
+    }
+
+    if (isset($_POST['roles'])) {
+        foreach ($_POST['roles'] as $role) {
+            try {
+                $sql = 'INSERT INTO authorrole SET 
+                    authorid =  :authorid, 
+                    roleid =  :roleid';
+                $s = $pdo->prepare($sql);
+                $s->bindValue(':authorid', $authorid);
+                $s->bindValue(':roleid', $role);
+                $s->execute();
+            } catch (PDOException $e) {
+                $error = 'Ошибка при назначении роли для автора.';
+                include 'error.html.php';
+                exit();
+            }
+        }
+    }
+    /* .................................................................. */
+
     header('Location: .');  /*отсылаем заголовок Location, чтобы объявить о перенаправлении.
                 Точка . обозначает текущий документ/директорию т.е. нужно перезагрузить текущую директорию
                 после добавления шутки в базу данных*/
