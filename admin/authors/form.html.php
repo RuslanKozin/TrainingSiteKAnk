@@ -20,10 +20,10 @@
         </div>
         <fieldset>
             <legend>Roles:</legend>
-            <?php for ($i = 0; $i < count($roles); $i++): ?>
+            <?php for ($i = 0; $i < count($roles); $i++): ?>  <!--Генерируем уникальное число для каждой роли-->
                 <div>
                     <label for="role<?php echo $i; ?>">
-                        <input type="checkbox" name="roles[]" id="role<?php echo $i; ?>"
+                        <input type="checkbox" name="roles[]" id="role<?php echo $i; ?>"  <!--Формируем id для ролей-->
                                value="<?php htmlout($roles[$i]['id']); ?>"
                         <?php
                             if ($roles[$i]['selected']) {
