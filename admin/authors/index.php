@@ -136,6 +136,42 @@ if (isset($_POST['action']) and $_POST['action'] == 'Редактировать'
     $email = $row['email'];
     $id = $row['id'];
     $button = 'Обновить информацию об авторе';
+
+    /* ........................ Формируем список ролей ..................... */
+    // Получаем список ролей, назначенных для данного автора,
+    try {
+        $sql = 'SELECT roleid FROM authorrole WHERE authorid = :id';
+        $s = $pdo->prepare($sql);
+        $s->bindValue(':id', $id);
+        $s->execute();
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при получении списка назначенных ролей.';
+        include 'error.html.php';
+        exit();
+    }
+    $selectedRoles = array();
+    foreach ($s as $row) {
+        $selectedRoles[] = $row['roleid'];
+    }
+
+    // Формируем список всех ролей,
+    try {
+        $result = $pdo->query('SELECT id, description FROM role');
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при получении списка ролей.';
+        include 'error.html.php';
+        exit();
+    }
+    foreach ($result as $row) {
+        $roles[] = array(
+            'id' => $row['id'],
+            'description' => $row['description'],
+            'selected' => in_array($row['id'], $selectedRoles));
+    }
+    /* ...................................................................... */
+
     include 'form.html.php';
     exit();
 }
@@ -157,6 +193,53 @@ if (isset($_GET['editform'])) {
         $error = 'Ошибка при обновлении записи об авторе.' . $e->getMessage();
         include 'error.html.php';
         exit();
+    }
+        //Обновление пароля при назначении автору
+    if ($_POST['password'] != '') {
+        $password = md5($_POST['password'] . 'ijdb');
+        try {
+            $sql = 'UPDATE author SET 
+                password = :password 
+                WHERE id = :id';
+            $s = $pdo->prepare($sql);
+            $s->bindValue(':password', $password);
+            $s->bindValue(':id', $_POST['id']);
+            $s->execute();
+        } catch (PDOException $e) {
+            $error = 'Ошибка при назначении пароля автору.';
+            include 'error.html.php';
+            exit();
+        }
+    }
+
+    try {
+        $sql = 'DELETE FROM authorrole WHERE authorid = :id';
+        $s = $pdo->prepare($sql);
+        $s->bindValue(':id', $_POST['id']);
+        $s->execute();
+    }
+    catch (PDOException $e) {
+        $error = 'Ошибка при удалении неактуальных записей о ролях автора.';
+        include 'error.html.php';
+        exit();
+    }
+        //Задаем роли автору
+    if (isset($_POST['roles'])) {
+        foreach ($_POST['roles'] as $role) {
+            try {
+                $sql = 'INSERT INTO authorrole SET
+                    authorid = :authorid,
+                    roleid = :roleid';
+                $s = $pdo->prepare($sql);
+                $s->bindValue(':authorid', $_POST['id']);
+                $s->bindValue(':roleid', $role);
+                $s->execute();
+            } catch (PDOException $e) {
+                $error = 'Ошибка при назначении автору заданных ролей.';
+                include 'error.html.php';
+                exit();
+            }
+        }
     }
     header('Location: .');  /*отсылаем заголовок Location, чтобы объявить о перенаправлении.
                 Точка . обозначает текущий документ/директорию т.е. нужно перезагрузить текущую директорию
