@@ -89,3 +89,15 @@ INNER JOIN category     /*полученные рузельтат внутрен
                                   и ячейки id таблицы category*/
 WHERE category.name = "о д'Артаньяне"   /*ГДЕ в ячейке name таблицы category есть слова "о д'Артаньяне"
                                         иными словами ГДЕ категория о д'Артаньяне*/
+
+
+  /* Ограничения внешного ключа */
+  CREATE TABLE  joke (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    joketext TEXT,
+    jokedate DATE NOT NULL,
+    authorid INT,
+    FOREIGN KEY (authorid) REFERENCES author (id)
+  ) DEFAULT CHARACTER SET utf8 ENGINE=InnoDB
+
+  ALTER TABLE joke ADD FOREIGN KEY (authorid) REFERENCES author (id)
