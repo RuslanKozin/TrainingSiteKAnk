@@ -4,11 +4,11 @@
 <head>
     <meta charset="utf-8">
     <title>Последние шутки</title>
-    <link rel="canonical" href="/recentjokes/">
+    <link rel="canonical" href="/recentjokes(Chapter12)/">
 </head>
 <body>
-    <р>Вот самые свежие шутки в базе данных:</р>
-    <?php foreach ($jokes  as  $joke): ?>
+    <p>Вот самые свежие шутки в базе данных:</p>
+    <?php foreach ($jokes as $joke): ?>
         <?php markdownout($joke['text']); ?>
     <?php endforeach; ?>
 </body>
